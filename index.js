@@ -1,11 +1,12 @@
 const Discord = require('discord.js')
 const bot = new Discord.Client();
+require('dotenv').config();
 
 bot.on('ready', function () {
   console.log("Je suis connecté !")
 })
 
-bot.login('NjI2NDI2MTQ3NjU1Mzg1MTA5.XdL_8A.5Fc9a1_q-8fpd3WdowOgRhMyIV0');
+bot.login(process.env.TOKEN_KEY);
 
 let users = [];
 
