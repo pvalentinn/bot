@@ -28,7 +28,7 @@ bot.on('message', message => {
     message.channel.send('Une partie de Loup-Garou est déjà en préparation.');
   } else if (message.content === '!lgjoin' && users.length >= 1 && !isBot) {
     for (i = 0; i < users.length; i++) {
-      if (!users.find(user => user.id === message.author.id)){
+      if (!users.find( user=> user.id === message.author.id)){
         users.push(
           {
           id: message.author.id,
@@ -49,5 +49,15 @@ bot.on('message', message => {
     console.log(message.author.bot);
   } else if (!isBot) {
     message.channel.send('oui bah nan');
+    message.member.setRoles()
+    .then(console.log)
+    .catch(console.error);
+   message.guild.createRole({name: '⠀',
+   color: 'BLUE',
+ })
+   .then(role => console.log(`Created new role with name ${role.name} and color ${role.color}`))
+   .catch(console.error);
+    //message.member.addRole({name: '⠀'});
+    //message.guild.fetchMembers()
   }
 });
