@@ -2,99 +2,50 @@ const Discord = require('discord.js')
 const bot = new Discord.Client();
 require('dotenv').config();
 
-bot.on('ready', function () {
-  console.log("Je suis connecté !")
-})
 
-bot.login(process.env.TOKEN_KEY);
+//const fs = require('fs');
+
+// fs.readdir("./commands/", (err, files) => {
+//   if(err) console.error(err);
+
+//   let commandes = f.filter(f => f.split('.').pop() === 'js');
+//   if(commandes.length <= 0 ) return console.log("No commands find");
+
+//   commandes.forEah((f) => {
+//     let commande = require(`./commands/${f}`);
+//     console.log(`${f} commande load`);
+    
+//   bot.commands.set(commande.help.name, command);
+//   });
+// });
 
 let users = [];
 let arrayRoles = [];
 
+bot.PREFIX = process.env.PREFIX;
+bot.commands = new Discord.Collection();
+bot.commands.set("create", require("./commands/create.js"));
+bot.commands.set("roles", require("./commands/roles.js"));
+
+
+
+bot.on('ready', function () {
+  console.log("Je suis connecté !")
+});
+
+
 bot.on('message', message => {
   let isBot = message.author.bot == true;
-  let con = message.content;
+  if (isBot) return;
 
-  if (con === '!lgcreate' && users.length === 0 && !isBot) {
-    message.channel.send('Vous avez créer une partie de Loup-Garou.');
-    users.push(
-      {
-      id: message.author.id,
-      name: message.author.username,
-      status: 0,
-      role: ""
-      }
-    )
-    console.log(users);
-    //console.log(users.length);
-  } else if (con === '!lgcreate' && users.length > 0 && !isBot){
-    message.channel.send('Une partie de Loup-Garou est déjà en préparation.');
-  } else if (con === '!lgjoin' && users.length >= 1 && !isBot) {
-    for (i = 0; i < users.length; i++) {
-      if (!users.find( user => user.id === message.author.id)){
-        users.push(
-          {
-          id: message.author.id,
-          name: message.author.username,
-          status: 0,
-          role: "",
-          votes: 0
-          }
-        )
-        message.channel.send(`Vous êtes ${users.length} dans la partie.`);
-        console.log(users);
-        break;
-      } else {
-        message.channel.send('Vous êtes déjà dans la partie active.');
-        break;
-      }
-    }
-  } else if (isBot) {
+  if (message.content.indexOf(bot.PREFIX) !== 0) return; 
+  const con = message.content.slice(bot.PREFIX.length);
 
-    console.log(message.author.bot);
-
-  } else if (con === '!lgroles') {
-
-    function returnRole (role) {
-      arrayRoles.push(role);
-      //console.log(`Created new role with name ${role.name} and color ${role.color}`);
-    };
-   
-     (async () => {
-      await  message.guild.createRole({name: '⠀', color: 'RED',})
-		  .then(role => returnRole(role))
-		  .catch(console.error);
-		  await message.guild.createRole({name: '⠀', color: 'GREEN',})
-		  .then(role => returnRole(role))
-		  .catch(console.error);
-		  await message.guild.createRole({name: '⠀', color: 'BLUE',})
-		  .then (role => returnRole(role))
-		  .catch(console.error);
-	
-		  console.log(arrayRoles);
-		  //console.log(arrayRoles[0]);
-     })();
-
-  } else if (con === '!lgdelete'){
-
-    for (let i = 0; i < arrayRoles.length; i++){
-      message.guild.roles.find(role => role.id === arrayRoles[i].id).delete().then( () => {
-        for (let i = 0; i < arrayRoles.length; i++){
-          if (arrayRoles.find( role => role.deleted=== true)) {
-            arrayRoles.splice(i, 1);
-            i--;
-          }
-        };
-      });
-      console.log(`deleted ${arrayRoles[i].id} successfully`);
-  }
-  setTimeout(() => {
-    console.log(arrayRoles);  
-  }, 1000);
-
+  if (bot.commands.has('create')) bot.commands.get('create')(message, con, users, isBot);
+  if (bot.commands.has('roles')) bot.commands.get('roles')(message, con, arrayRoles);
   
-  } else if (message.content.startsWith('!purge')){
-    console.clear();
+  if (message.content.startsWith('!purge')){
+    //console.clear();
     let way = message.content.slice(6).split(' ');
     let xay = way.slice(1);    
 
@@ -114,6 +65,8 @@ bot.on('message', message => {
   
       console.log('Clearing messages');
     }
-     
   }
 });
+
+
+bot.login(process.env.TOKEN_KEY);
