@@ -22,21 +22,22 @@ module.exports = (message, con, arrayRoles) => {
          })();
     
       } else if (con === 'delete'){
-    
-        for (let i = 0; i < arrayRoles.length; i++){
-          message.guild.roles.find(role => role.id === arrayRoles[i].id).delete().then( () => {
-            for (let i = 0; i < arrayRoles.length; i++){
-              if (arrayRoles.find( role => role.deleted=== true)) {
-                arrayRoles.splice(i, 1);
-                i--;
-              }
-            };
-          });
-          console.log(`deleted ${arrayRoles[i].id} successfully`);
-      }
-      setTimeout(() => {
-        console.log(arrayRoles);  
-      }, 1000);
-    
+
+      let deletedRoles = () => {
+        for (let i = arrayRoles.length; i--;){
+          arrayRoles[i].deleted = true;
+          
+          arrayRoles[i].delete();
+          console.log(arrayRoles[i]);
+          arrayRoles.splice(i, 1);
+          //await arrayRoles.shift(); 
+        };
+        //
+        //;
+        
+      };
+      deletedRoles();
+      console.log(arrayRoles);
+      
     }
 }

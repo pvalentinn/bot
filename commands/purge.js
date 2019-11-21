@@ -12,9 +12,9 @@ module.exports = (msg) => {
           
             const messages =  await msg.channel.fetchMessages({limit: word});
             msg.channel.bulkDelete(messages)
-            .then(messages => console.log(`Deleted ${messages.size} messages`))
+            .then(messages => console.log(`Deleted ${messages.size} messages.`))
             .catch(console.error);
-            msg.channel.send(`Deleted ${messages.size} messages`);
+            msg.channel.send(`Deleted ${messages.size} messages.`);
       
           }
           purge();

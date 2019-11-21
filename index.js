@@ -2,27 +2,10 @@ const Discord = require('discord.js')
 const bot = new Discord.Client();
 require('dotenv').config();
 
-
-//const fs = require('fs');
-
-// fs.readdir("./commands/", (err, files) => {
-//   if(err) console.error(err);
-
-//   let commandes = f.filter(f => f.split('.').pop() === 'js');
-//   if(commandes.length <= 0 ) return console.log("No commands find");
-
-//   commandes.forEah((f) => {
-//     let commande = require(`./commands/${f}`);
-//     console.log(`${f} commande load`);
-    
-//   bot.commands.set(commande.help.name, command);
-//   });
-// });
-
 let users = [];
 let arrayRoles = [];
 
-bot.PREFIX = process.env.PREFIX;
+bot.PREFIX = process.env.PREFIX + ' ';
 bot.commands = new Discord.Collection();
 
 bot.commands.set("create", require("./commands/create.js"));
