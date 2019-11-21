@@ -26,7 +26,6 @@ module.exports = (message, con, arrayRoles) => {
       let deletedRoles = () => {
         for (let i = arrayRoles.length; i--;){
           arrayRoles[i].deleted = true;
-          
           arrayRoles[i].delete();
           console.log(arrayRoles[i]);
           arrayRoles.splice(i, 1);

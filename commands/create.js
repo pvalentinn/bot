@@ -1,4 +1,4 @@
-module.exports =  (message, con, users, isBot) => {
+module.exports =  (message, con, users, isBot, min, channelVillage) => {
     if (con === 'create' && users.length === 0 && !isBot) {
         message.channel.send('Vous avez créer une partie de Loup-Garou.');
         users.push(
@@ -34,5 +34,12 @@ module.exports =  (message, con, users, isBot) => {
             break;
           }
         }
-      } 
+      } else if (con === 'start') {
+        const parent = message.channel.parentID;
+        if(users.length < min) message.channel.send(`Il faut être minimum ${min} pour lancer une partie.`);
+        if(users.length >= min) {
+           message.guild.createChannel('Village', {type: 'text', position: 0, parent: parent})
+           .then(channel => { channelVillage.push(channel) });
+        }
+      }
 }
