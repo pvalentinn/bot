@@ -8,7 +8,8 @@ module.exports =  (message, con, users, isBot) => {
             id: message.author.id,
             name: message.author.username,
             status: 0,
-            role: ""
+            role: "",
+            votes: 0
             });
         reject(console.error());
       })
@@ -46,7 +47,7 @@ module.exports =  (message, con, users, isBot) => {
             break;
           }
         }
-      } else {
-        message.channel.send("Aucune partie n'a été crée, pour en créer une faites '!lg create'.");
+      } else if (con === 'join' && verif === false && !isBot) { 
+         message.channel.send("Aucune partie n'a été crée, pour en créer une faites '!lg create'.");
       }
 }

@@ -1,5 +1,6 @@
 module.exports = (message, con, min, users, channelVillage, parent, arrayRoles) => {
     if (con === 'start') {
+        let verif = users.has(message.guild.id);
         if(parent.length !== 0) { message.channel.send( 'Une partie a déjà commencé.'); return }
         if(users.length < min) message.channel.send(`Il faut être minimum ${min} pour lancer une partie.`);
         if(users.length >= min) {
