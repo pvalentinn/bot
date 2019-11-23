@@ -19,6 +19,7 @@ module.exports = (message, con, min, users, channelVillage, parent, arrayRoles) 
             channelVillage[0].send("Bienvenue dans le Village, retrouvez vos rôles respectifs dans les salons textuels qui viennent d'ètre crée.");
             channelVillage[0].send("Vous avez maintenant 30 secondes avant que la nuit ne tombe.");
 
+
             await  message.guild.createRole({name: '⠀', color: 'RED',})
             .then(role => returnRole(role))
             .catch(console.error);
@@ -33,8 +34,26 @@ module.exports = (message, con, min, users, channelVillage, parent, arrayRoles) 
             //console.log(arrayRoles[0]);
 
             channelVillage.push(await createChannel('Loups', 'text', parent[0].id));
+
             channelVillage.push(await createChannel('Sorcière', 'text', parent[0].id));
+
             channelVillage.push(await createChannel('Voyante', 'text', parent[0].id));
+
+
+            let s = 30;
+            let time = await channelVillage[0].send(`La nuit tombe dans : ${s} secondes.`);
+            console.log(time);
+            
+            let i = 0;
+            setInterval( () => {
+                if (i <= s){
+                    //console.log(s - i);
+                    //console.log(time);
+                    time.edit(`La nuit tombe dans : ${s - i} secondes.`);
+                    i++;
+                }
+            }, 1000); 
+
 
 
            })();

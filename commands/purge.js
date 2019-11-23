@@ -19,7 +19,7 @@ module.exports = (msg) => {
           }
           purge();
       
-          console.log('Clearing messages');
+          //console.log('Clearing messages');
         }
       }
 }
