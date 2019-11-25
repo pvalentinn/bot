@@ -1,4 +1,4 @@
-module.exports =  (message, con, users, isBot) => {
+module.exports =  (message, con, users, isBot, parent) => {
 
     let verif = users.has(message.guild.id);
 
@@ -14,8 +14,10 @@ module.exports =  (message, con, users, isBot) => {
         reject(console.error());
       })
     };
+    
 
     if (con === 'create' && verif === false && !isBot) {
+      
         message.channel.send('Vous avez créer une partie de Loup-Garou.');
         (async () => {
           users.set(message.guild.id, [await createUser()]);
@@ -25,10 +27,12 @@ module.exports =  (message, con, users, isBot) => {
         })();
         
     } else if (con === 'create' && verif === true && !isBot){
+      if (message.guild.channels.find(channel => channel.name === 'LG')) return message.channel.send('Une partie a déjà commencé.');
         message.channel.send('Une partie de Loup-Garou est déjà en préparation.');
         console.log(users.get(message.guild.id));
         
     } else if (con === 'join' && verif === true >= 1 && !isBot) {
+      if (message.guild.channels.find(channel => channel.name === 'LG')) return message.channel.send('Une partie a déjà commencé.');
         for (i = 0; i < users.get(message.guild.id).length; i++) {
           if (!users.get(message.guild.id).find( user => user.id === message.author.id)){
             (async () => {

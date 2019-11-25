@@ -14,7 +14,7 @@
     "eslint": "^6.6.0",
     "eslint-config-aqua": "^7.1.2"
   },
-"eslintConfig": {
-  "extends": "aqua/node"
+  "eslintConfig": {
+    "extends": "aqua/node"
   }
 }
