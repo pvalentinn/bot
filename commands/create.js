@@ -1,6 +1,8 @@
-module.exports =  (message, con, users, isBot, parent) => {
+module.exports =  (message, con, isBot, serveur) => {
 
-    let verif = users.has(message.guild.id);
+    let guild = message.guild.id;
+    let actual = serveur.get(guild);
+    let hMany = actual.users.length;
 
     let createUser = () => {
       return new Promise( (resolve, reject) => {
@@ -14,44 +16,40 @@ module.exports =  (message, con, users, isBot, parent) => {
         reject(console.error());
       })
     };
-    
 
-    if (con === 'create' && verif === false && !isBot) {
-      
+   
+    if (con === 'create' && hMany === 0 && !isBot) {
+      // if (actual.arrayChannel.length > 0) return message.channel.send('Une partie a déjà commencé.');
         message.channel.send('Vous avez créer une partie de Loup-Garou.');
         (async () => {
-          users.set(message.guild.id, [await createUser()]);
-          //users.push(await createUser());
-          console.log(users.get(message.guild.id));
-          // console.log(users.get(message.guild.id).length);
+          actual.users.push(await createUser());
+          console.log(actual.users);
         })();
         
-    } else if (con === 'create' && verif === true && !isBot){
-      if (message.guild.channels.find(channel => channel.name === 'LG')) return message.channel.send('Une partie a déjà commencé.');
+    } else if (con === 'create' && hMany >= 1 && !isBot){
+      if (actual.arrayChannel.length > 0) return message.channel.send('Une partie a déjà commencé.');
         message.channel.send('Une partie de Loup-Garou est déjà en préparation.');
-        console.log(users.get(message.guild.id));
+        console.log(actual.users);
         
-    } else if (con === 'join' && verif === true >= 1 && !isBot) {
-      if (message.guild.channels.find(channel => channel.name === 'LG')) return message.channel.send('Une partie a déjà commencé.');
-        for (i = 0; i < users.get(message.guild.id).length; i++) {
-          if (!users.get(message.guild.id).find( user => user.id === message.author.id)){
+    } else if (con === 'join' && hMany >= 1 && !isBot) {
+      if (actual.arrayChannel.length > 0) return message.channel.send('Une partie a déjà commencé.');
+        for (i = 0; i < hMany; i++) {
+          if (!actual.users.find( user => user.id === message.author.id)){
             (async () => {
-              //users.set(message.guild.id, [await createUser()]);
-              users.get(message.guild.id).push(await createUser());
-              //users.push(await createUser());
+
+              actual.users.push(await createUser());
+              console.log(actual.users);
               //console.log(users.get(message.guild.id));
-              message.channel.send(`Vous êtes ${users.get(message.guild.id).length} dans la partie.`);
-              console.log(users.get(message.guild.id));
+              await message.channel.send(`Vous êtes ${actual.users.length} dans la partie.`);
+              //console.log(users.get(message.guild.id));
             })();
-            // message.channel.send(`Vous êtes ${users.get(message.guild.id).length} dans la partie.`);
-            console.log(users.get(message.guild.id));
             break;
           } else {
             message.channel.send('Vous êtes déjà dans la partie active.');
             break;
           }
         }
-      } else if (con === 'join' && verif === false && !isBot) { 
+      } else if (con === 'join' && hMany === 0 && !isBot) { 
          message.channel.send("Aucune partie n'a été crée, pour en créer une faites '!lg create'.");
       }
 }

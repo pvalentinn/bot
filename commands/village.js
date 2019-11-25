@@ -1,134 +1,92 @@
-module.exports = (message, con, min, users, channelVillage, parent, arrayRoles) => {
-    let roles = [];
-    let channels = [];
-    let category = [];
+module.exports = (message, con, min, serveur) => {
+
     let guild = message.guild.id;
-    let verif = parent.has(guild);
- 
+    let hMany = serveur.get(guild).users.length;
+    let start = serveur.get(guild).arrayChannel.length;
+    let actual = serveur.get(guild);
+  
     
-
+  
     if (con === 'start') {
-        if (verif === true) {
-            if(parent.get(guild).length !== 0){
-                console.log('je sufzei')
-                return message.channel.send('Une partie a déjà commencé.');
-            }
-        }
+        if (start > 0) return message.channel.send('Une partie à deja commencé.');
         
-        if(users.size < min) message.channel.send(`Il faut être minimum ${min} pour lancer une partie.`);
-        if(users.size >= min) {
-
+        if(hMany < min) message.channel.send(`Il faut être minimum ${min} pour lancer une partie.`);
+        if(hMany >= min) {
+  
           let createChannel = (name, type, papa) => {
             return message.guild.createChannel(name, {type: type, parent: papa});
           };
-
+  
           
-          function returnRole (role) {
-            roles.push(role);
-            //console.log(`Created new role with name ${role.name} and color ${role.color}`);
+          let createRole = (name, color) => {
+            return message.guild.createRole({name: name, color: color});
           };
-
+  
            (async () => {
-            category.push(await createChannel('LG', 'category'));
-            await parent.set(guild, category);
-
-            channels.push(await createChannel('Village', 'text', parent.get(guild)[0].id));
-            channels[0].send("Bienvenue dans le Village, retrouvez vos rôles respectifs dans les salons textuels qui viennent d'ètre crée.");
-            channels[0].send("Vous avez maintenant 30 secondes avant que la nuit ne tombe.");
-
-            await  message.guild.createRole({name: '⠀', color: 'RED',})
-            .then(role => returnRole(role))
-            .catch(console.error);
-            await message.guild.createRole({name: '⠀', color: 'GREEN',})
-            .then(role => returnRole(role))
-            .catch(console.error);
-            await message.guild.createRole({name: '⠀', color: 'BLUE',})
-            .then (role => returnRole(role))
-            .catch(console.error);
-
-            arrayRoles.set(guild, roles);
-            console.log(arrayRoles);
-            //console.log(roles);
-      
-            //console.log(arrayRoles);
-            //console.log(arrayRoles[0]);
-
-            channels.push(await createChannel('Loups', 'text', parent.get(guild)[0].id));
-
-            channels.push(await createChannel('Sorcière', 'text', parent.get(guild)[0].id));
-
-            channels.push(await createChannel('Voyante', 'text', parent.get(guild)[0].id));
-
-            await channelVillage.set(guild, channels);
-
-
+            await actual.arrayChannel.push(await createChannel('LG', 'category'));
+            console.log(await actual.arrayChannel);
+  
+            await actual.arrayChannel.push(await createChannel('Village', 'text', actual.arrayChannel[0].id));
+            actual.arrayChannel[1].send("Bienvenue dans le Village, retrouvez vos rôles respectifs dans les salons textuels qui viennent d'ètre crée.");
+            actual.arrayChannel[1].send("Vous avez maintenant 30 secondes avant que la nuit ne tombe.");
+  
+            await actual.arrayRoles.push(await createRole('⠀', 'RED'));
+            await actual.arrayRoles.push(await createRole('⠀', 'GREEN'));
+            await actual.arrayRoles.push(await createRole('⠀', 'BLUE'));
+  
+            await actual.arrayChannel.push(await createChannel('Loups', 'text', actual.arrayChannel[0].id));
+  
+            await actual.arrayChannel.push(await createChannel('Sorcière', 'text', actual.arrayChannel[0].id));
+  
+            await actual.arrayChannel.push(await createChannel('Voyante', 'text', actual.arrayChannel[0].id));
+  
+  
             let s = 30;
-            let time = await channelVillage.get(guild)[0].send(`La nuit tombe dans : ${s} secondes.`);
+            let time = await actual.arrayChannel[1].send(`La nuit tombe dans : ${s} secondes.`);
             //console.log(time);
             
             let timeout = () => {
                 return new Promise( (resolve, reject) => {
                     let i = 0;
                     
-                    console.log(parent.has(guild));
                     let interval = setInterval( () => {
-                    
-                        if (channelVillage.get(message.guild.id).length > 0){
-                            if (i <= s && parent.has(guild) === true){
-                                //console.log(s - i);
-                                //console.log(time);
-                                time.edit(`La nuit tombe dans : ${s - i} secondes.`);
-                                i++;
-                                console.log(i);
-                            } else if (i === s && parent.has(guild) === true){
-                                clearInterval(interval);
-                                return console.log('timer finished');
-                            }
-                        } else if (channelVillage.get(message.guild.id).length <= 0){
+                        if (actual.arrayChannel.length === 0) return clearInterval(interval);
+                        if (i <= s){
+                            time.edit(`La nuit tombe dans : ${s - i} secondes.`);
+                            i++;
+                        } else if (i === s){
                             clearInterval(interval);
-                            return console.log('over');
+                            return console.log('timer finished')
                         }
-
                     }, 1000);
-
+  
                     resolve('Timer finished');
                     reject('Timer didnt finished');
                 })
             }
             await timeout();
-
+  
            })();
           
         }
       } else if (con === 'log') {
-        console.log(arrayRoles);
-        console.log(users);
-        console.log(channelVillage);
-        console.log(parent);
+        console.clear();
+        console.log(actual);
+        console.log(actual.arrayRoles);
+        console.log(actual.arrayChannel);
       } else if (con === 'reset') {
-        if(verif === false || users.has(guild) === false) return message.channel.send( 'Pas de parties en cours.');
-        else {
-            // let deletedParent = () => {
-            //     return new Promise( (resolve, reject) => {
-            //         parent.get(guild).deleted = true;
-            //         parent.get(guild).delete();
-            //         parent.delete(guild);
-            //         resolve('finished');
-            //         reject(console.error());
-            //     })
-            // };
-    
+        if(start === 0 || hMany === 0) return message.channel.send( 'Pas de parties en cours.');
+        else {  
             
             let deletedUniversal = (element) => {
                 return new Promise( (resolve, reject) => {
     
-                    for (let i = element.get(guild).length; i--;){
-                        element.get(guild)[i].deleted = true;
+                    for (let i = element.length; i--;){
+                        element[i].deleted = true;
                         setTimeout( () => {
-                            element.get(guild)[i].delete();
-                            //console.log(element[i]);
-                            element.get(guild).splice(i, 1);
-                        }, 500);
+                            element[i].delete();
+                            element.pop();
+                        }, 1500)
                     };
                     resolve('finished');
                     reject(console.error());
@@ -136,14 +94,15 @@ module.exports = (message, con, min, users, channelVillage, parent, arrayRoles) 
             };
     
             (async () => {
-                await deletedUniversal(arrayRoles);
-                console.log(arrayRoles);
-                await deletedUniversal(channelVillage);
-                console.log(channelVillage);
-                await deletedUniversal(parent);
-                console.log(parent);
-                users.delete(guild);
-                console.log(users);
+
+                await deletedUniversal(await serveur.get(message.guild.id).arrayRoles);
+                console.log(await serveur.get(message.guild.id).arrayRoles);
+
+                await deletedUniversal(await serveur.get(message.guild.id).arrayChannel);
+                console.log(await serveur.get(message.guild.id).arrayChannel);
+
+                actual.users.splice(0, actual.users.length);
+                console.log(actual.users);
             })();
         }
   } else if (con === 'bug'){

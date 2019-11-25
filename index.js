@@ -2,15 +2,9 @@ const Discord = require('discord.js')
 const bot = new Discord.Client();
 require('dotenv').config();
 
-let users = new Map();
-let arrayRoles = new Map();
-let parent = new Map();
-let channelVillage = new Map();
+let serveur = new Map();
 
 let min = 1;
-
-
-
 
 bot.PREFIX = process.env.PREFIX + ' ';
 bot.commands = new Discord.Collection();
@@ -23,19 +17,40 @@ bot.commands.set("village", require("./commands/village.js"));
 
 
 bot.on('ready', function () {
-  console.log("Je suis connecté !")
+  console.log("Je suis connecté !");
+  let keys = bot.guilds.keyArray();
+  //console.log(keys);
+  for (i = 0; i < keys.length; i++){
+    serveur.set(keys[i], {
+      users : [],
+      arrayRoles : [],
+      arrayChannel : []
+    })
+  }
+  //console.log(serveur);
+});
+
+bot.on('guildCreate', guild => {
+  console.log('Joined a guild');
+  let key = guild.id
+  serveur.set(key, {
+    users : [],
+    arrayRoles : [],
+    arrayChannel : []
+  });
+  //console.log(serveur);
 });
 
 
 bot.on('message', message => {
-
+  let guild = message.guild.id;
+  let actual = serveur.get(guild);
 
   if (message.content === 'map'){
-    // console.log(users);
-    // console.log(arrayRoles);
-    console.log(parent);
-    console.log(channelVillage);
-    console.log(channelVillage.get(message.guild.id).length)
+    // console.log(actual.users.length);
+    // console.log(actual.arrayChannel.length);
+    // console.log(actual.arrayRoles.length);
+    // console.log(actual);
   }
 
   let isBot = message.author.bot == true;
@@ -47,10 +62,9 @@ bot.on('message', message => {
   const con = message.content.slice(bot.PREFIX.length);
  
 
-  if (bot.commands.has('create')) bot.commands.get('create')(message, con, users, isBot, parent);
+  if (bot.commands.has('create')) bot.commands.get('create')(message, con, isBot, serveur);
   // if (bot.commands.has('roles')) bot.commands.get('roles')(message, con, arrayRoles);
-  if (bot.commands.has('village')) bot.commands.get('village')(message, con, min, users, channelVillage, parent, arrayRoles);
-  //console.log(parent);
+  if (bot.commands.has('village')) bot.commands.get('village')(message, con, min, serveur);
   
 
 });
