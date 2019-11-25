@@ -51,5 +51,15 @@ module.exports =  (message, con, isBot, serveur) => {
         }
       } else if (con === 'join' && hMany === 0 && !isBot) { 
          message.channel.send("Aucune partie n'a été crée, pour en créer une faites '!lg create'.");
-      }
+      } else if (con === 'leave'){
+        if(!actual.users.find( user => user.id === message.author.id)){
+          if (hMany === 0 && !isBot) return message.channel.send("Aucune partie n'a été crée, pour en créer une faites '!lg create'.");
+          message.channel.send("Tu n'es pas dans la partie.");
+        } else if (actual.users.find( user => user.id === message.author.id)){
+          let leaver = (actual.users.find( user => user.id === message.author.id));  
+          console.log(actual.users.indexOf(leaver));
+          actual.users.splice(actual.users.indexOf(leaver), 1);
+          message.channel.send(`${leaver.name} à quitté la partie.`);
+        }
+      };
 }

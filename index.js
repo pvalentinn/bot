@@ -14,6 +14,7 @@ bot.commands.set("create", require("./commands/create.js"));
 bot.commands.set("purge", require("./commands/purge.js"));
 bot.commands.set("village", require("./commands/village.js"));
 // bot.commands.set("timer", require("./commands/timer.js"));
+bot.commands.set("turns", require("./commands/turns.js"));
 
 
 bot.on('ready', function () {
@@ -65,6 +66,8 @@ bot.on('message', message => {
   if (bot.commands.has('create')) bot.commands.get('create')(message, con, isBot, serveur);
   // if (bot.commands.has('roles')) bot.commands.get('roles')(message, con, arrayRoles);
   if (bot.commands.has('village')) bot.commands.get('village')(message, con, min, serveur);
+
+
   
 
 });
