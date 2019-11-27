@@ -8,16 +8,17 @@ module.exports = (bot) => {
         let tirage = Math.floor(Math.random() * sansRoles.length);
         //console.log(tirage);
         let user = {};
-    
+        
+        if (!message.guild.roles.has(actual.arrayRoles[i].id)) return console.log('laisse tombé');
         if (sansRoles.length === 0) return console.log("No more without roles.");
         if (sansRoles.length <=  4){
             for (i = 0; i <= sansRoles.length; i++) {
                 message.guild.members.find(member => member.id === sansRoles[tirage].id).addRole(actual.arrayRoles[i]);
                 user = actual.users.find(user => user.id === sansRoles[tirage].id);
                 user.status = 1;
-                console.log(sansRoles);
+                //console.log(sansRoles);
                 sansRoles.splice(tirage, 1);
-                console.log(sansRoles);
+                //console.log(sansRoles);
                 tirage = Math.floor(Math.random() * sansRoles.length);
             }
         }
@@ -91,9 +92,11 @@ module.exports = (bot) => {
     }
     bot.seeChannel = (serveur, guild, actual, message) => {
         for (i = 0; i < actual.arrayRoles.length; i++){
+            if (!message.guild.roles.has(actual.arrayRoles[i].id)) return console.log('laisse tombé');
             actual.arrayChannel[1].overwritePermissions((actual.arrayRoles[i].id), {'VIEW_CHANNEL': true, 'CONNECT': true, 'ADMINISTRATOR ': false, 'READ_MESSAGE_HISTORY': true, 'SEND_MESSAGES': false });
             actual.arrayChannel[2].overwritePermissions((actual.arrayRoles[i].id), {'VIEW_CHANNEL': true, 'CONNECT': true, 'ADMINISTRATOR ': false, 'SPEAK': true });
         }
+        if (!message.guild.roles.has(actual.arrayRoles[i].id)) return console.log('laisse tombé');
         actual.arrayChannel[3].overwritePermissions((actual.arrayRoles[1].id), {'VIEW_CHANNEL': true, 'CONNECT': true, 'ADMINISTRATOR ': false, 'READ_MESSAGE_HISTORY': true, 'SEND_MESSAGES': false  });
         actual.arrayChannel[4].overwritePermissions((actual.arrayRoles[2].id), {'VIEW_CHANNEL': true, 'CONNECT': true, 'ADMINISTRATOR ': false, 'READ_MESSAGE_HISTORY': true, 'SEND_MESSAGES': false  });
         actual.arrayChannel[5].overwritePermissions((actual.arrayRoles[0].id), {'VIEW_CHANNEL': true, 'CONNECT': true, 'ADMINISTRATOR ': false, 'READ_MESSAGE_HISTORY': true, 'SEND_MESSAGES': false  });
