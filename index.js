@@ -13,7 +13,7 @@ bot.commands.set("purge", require("./commands/purge.js"));
 bot.commands.set("village", require("./commands/village.js"));
 // bot.commands.set("timer", require("./commands/timer.js"));
 bot.commands.set("turns", require("./commands/turns.js"));
-require('./commands/random')(bot);
+require('./commands/functions')(bot);
 
 
 bot.on('ready', function () {
