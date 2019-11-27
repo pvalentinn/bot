@@ -1,5 +1,6 @@
 module.exports =  (message, con, isBot, serveur) => {
 
+    let max = 10;
     let guild = message.guild.id;
     let actual = serveur.get(guild);
     let hMany = actual.users.length;
@@ -10,13 +11,12 @@ module.exports =  (message, con, isBot, serveur) => {
             id: message.author.id,
             name: message.author.username,
             status: 0,
-            role: "",
+            //role: "",
             votes: 0
             });
         reject(console.error());
       })
     };
-
    
     if (con === 'create' && hMany === 0 && !isBot) {
       // if (actual.arrayChannel.length > 0) return message.channel.send('Une partie a déjà commencé.');
@@ -33,6 +33,7 @@ module.exports =  (message, con, isBot, serveur) => {
         
     } else if (con === 'join' && hMany >= 1 && !isBot) {
       if (actual.arrayChannel.length > 0) return message.channel.send('Une partie a déjà commencé.');
+      if (hMany === max) return message.channel.send(`Le nombre de joueurs maximum à été atteind, soit ${10}.`);
         for (i = 0; i < hMany; i++) {
           if (!actual.users.find( user => user.id === message.author.id)){
             (async () => {
