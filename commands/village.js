@@ -8,12 +8,26 @@ module.exports = (bot, message, con, serveur) => {
   let keys = message.guild.roles.keyArray();
   //console.log(keys);
 
+
   if (con === 'start') {
       if (start > 0) return message.channel.send('Une partie à deja commencé.');
       if(hMany < min || hMany > 10) return message.channel.send(`Il faut être ${min} pour lancer une partie (et ${max} maximum).`);
       if(hMany >= min || hMany <= 10)  {
           if (!actual.users.find( user => user.id === message.author.id)) return message.channel.send("Tu ne fais pas partie des joueurs. Pour en faire partie '!lg join'.");
-
+          if (actual.start[0] !== message.channel){
+            (async () => {
+              // console.log(message.channel)
+              // console.log(actualChannel);
+              let msg = await message.channel.send(`Mauvais channel va à #${actual.start[0].name}.`);
+              // console.log(message);
+              // console.log(msg);
+              setTimeout( () => {
+                message.delete();
+                msg.delete();
+              }, 1000)
+            })()
+            return console.log(`Mauvais channel va à #${actual.start[0].name}.`);
+          }
         let createChannel = (name, type, papa) => {
           return message.guild.createChannel(name, {type: type, parent: papa});
         };
@@ -61,9 +75,10 @@ module.exports = (bot, message, con, serveur) => {
           await bot.seeChannel(serveur, guild, actual, message);
           
 
-          let s = 30;
+          let s = 10;
           let time = await actual.arrayChannel[1].send(`La nuit tombe dans : ${s} secondes.`);
           //console.log(time);
+          let start = () => actual.gameStart = 1;
           
           let timeout = () => {
               return new Promise( (resolve, reject) => {
@@ -74,9 +89,10 @@ module.exports = (bot, message, con, serveur) => {
                       if (i <= s){
                           time.edit(`La nuit tombe dans : ${s - i} secondes.`);
                           i++;
-                      } else if (i === s){
+                          // console.log(i);
+                      } else if (i > s){
                           clearInterval(interval);
-                          return console.log('timer finished')
+                          start();
                       }
                   }, 1000);
 
@@ -109,11 +125,10 @@ module.exports = (bot, message, con, serveur) => {
               // console.log(i);
               element[i].deleted = true;
               element[i].delete();
-              await timer(250);
+              await timer(350);
             }
             element.splice(0, x);
           }
-  
           (async () => {
 
               await deletedUniversal(serveur.get(message.guild.id).arrayRoles);
@@ -122,11 +137,11 @@ module.exports = (bot, message, con, serveur) => {
               //console.log(await serveur.get(message.guild.id).arrayChannel);
               actual.users.splice(0, actual.users.length);
               //console.log(actual.users);
+              actual.gameStart = 0;
           })();
       }
-} else if (con === 'bug'){
-   actual.arrayChannel[1].overwritePermissions((actual.arrayRoles[0].id), {'SEND_MESSAGES': true });
-  console.log( actual.arrayChannel[1].permissionsFor(actual.users[0].id));
-
-}
+    } else if (con === 'bug'){
+      actual.arrayChannel[1].overwritePermissions((actual.arrayRoles[0].id), {'SEND_MESSAGES': true });
+      console.log( actual.arrayChannel[1].permissionsFor(actual.users[0].id));
+    }
 }
