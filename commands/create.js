@@ -1,9 +1,11 @@
-module.exports =  (message, con, isBot, serveur) => {
+module.exports =  (bot, message, con, isBot, serveur) => {
 
+    
     let max = 10;
     let guild = message.guild.id;
     let actual = serveur.get(guild);
     let hMany = actual.users.length;
+    bot.leave(serveur, guild, actual, message);
     
     let createUser = () => {
       return new Promise( (resolve, reject) => {
@@ -24,7 +26,7 @@ module.exports =  (message, con, isBot, serveur) => {
         (async () => {
           actual.users.push(await createUser());
           actual.start.push(await message.channel);
-          console.log(message);
+          //console.log(message);
           //console.log(actual.users);
         })();
       } else if (hMany >= 1 && !isBot) {
@@ -63,7 +65,7 @@ module.exports =  (message, con, isBot, serveur) => {
               (async () => {
   
                 actual.users.push(await createUser());
-                console.log(actual.users);
+                //console.log(actual.users);
                 //console.log(users.get(message.guild.id));
                 await message.channel.send(`Vous êtes ${actual.users.length} dans la partie.`);
                 //console.log(users.get(message.guild.id));
@@ -78,38 +80,5 @@ module.exports =  (message, con, isBot, serveur) => {
         message.channel.send("Aucune partie n'a été crée, pour en créer une faites '!lg create'.");
       }
 
-    } else if (con === 'leave'){
-        if(!actual.users.find( user => user.id === message.author.id)){
-          if (hMany === 0 && !isBot) return message.channel.send("Aucune partie n'a été crée, pour en créer une faites '!lg create'.");
-          message.channel.send("Tu n'es pas dans la partie.");
-        } else if (actual.users.find( user => user.id === message.author.id)){
-          if (actual.start[0] !== message.channel){
-            (async () => {
-              let msg = await message.channel.send(`Mauvais channel va à #${actual.start[0].name}.`);
-              setTimeout( () => {
-                message.delete();
-                msg.delete();
-              }, 1000)
-            })()
-            return console.log(`Mauvais channel va à #${actual.start[0].name}.`);
-          }
-          let leaver = (actual.users.find( user => user.id === message.author.id));  
-          if (leaver === actual.users[0]) actual.start.shift();
-          //console.log(actual.users.indexOf(leaver));
-          actual.users.splice(actual.users.indexOf(leaver), 1);
-          message.channel.send(`${leaver.name} à quitté la partie.`);
-        }
-      };
+    } 
 }
-
-
-// if (actual.start[0] !== message.channel){
-//   (async () => {
-//     let msg = await message.channel.send(`Mauvais channel va à #${actual.start[0].name}.`);
-//     setTimeout( () => {
-//       message.delete();
-//       msg.delete();
-//     }, 1000)
-//   })()
-//   return console.log(`Mauvais channel va à #${actual.start[0].name}.`);
-// }

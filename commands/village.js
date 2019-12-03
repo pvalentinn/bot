@@ -6,6 +6,7 @@ module.exports = (bot, message, con, serveur) => {
   let min = 1;
   let max = 10;
   let keys = message.guild.roles.keyArray();
+
   //console.log(keys);
 
 
@@ -50,7 +51,7 @@ module.exports = (bot, message, con, serveur) => {
           await actual.arrayRoles.push(await createRole('⠀', 'RED')); // Voyante   0
           await actual.arrayRoles.push(await createRole('⠀', 'GREEN')); //Loups    1
           await actual.arrayRoles.push(await createRole('⠀', 'BLUE'));  //Sorcière  2
-          await actual.arrayRoles.push(await createRole('⠀', 'YELLOW'));    // Villageois  3
+          await actual.arrayRoles.push(await createRole('⠀', '#ffff00'));    // Villageois  3
 
 
           await actual.arrayChannel.push(await createChannel('Loups', 'text', actual.arrayChannel[0].id)); // 3
@@ -70,7 +71,7 @@ module.exports = (bot, message, con, serveur) => {
                   await actual.arrayChannel[j].overwritePermissions((keys[i]), {'VIEW_CHANNEL': false, 'CONNECT': false, 'ADMINISTRATOR ': false, 'SPEAK': false });
                }
           }
-          console.log('done');
+          //console.log('done');
 
           await bot.seeChannel(serveur, guild, actual, message);
           
@@ -112,34 +113,7 @@ module.exports = (bot, message, con, serveur) => {
        console.log(actual.arrayRoles);
       // console.log(actual.arrayChannel);
     } else if (con === 'reset') {
-      if(start === 0 || hMany === 0) return message.channel.send( 'Pas de parties en cours.');
-      if (!actual.users.find( user => user.id === message.author.id)) return message.channel.send("Tu ne fais pas partie des joueurs.");
-      else {  
-          
-          function timer(ms) { return new Promise(res => setTimeout(res, ms)); }
-
-          async function deletedUniversal (element) {
-            let x = element.length;
-            for(let i = x - 1; i >= 0; i--) {
-              // console.log(element);
-              // console.log(i);
-              element[i].deleted = true;
-              element[i].delete();
-              await timer(350);
-            }
-            element.splice(0, x);
-          }
-          (async () => {
-
-              await deletedUniversal(serveur.get(message.guild.id).arrayRoles);
-              //console.log(await serveur.get(message.guild.id).arrayRoles);
-              await deletedUniversal(serveur.get(message.guild.id).arrayChannel);
-              //console.log(await serveur.get(message.guild.id).arrayChannel);
-              actual.users.splice(0, actual.users.length);
-              //console.log(actual.users);
-              actual.gameStart = 0;
-          })();
-      }
+       bot.reset(serveur, guild, actual, message);
     } else if (con === 'bug'){
       actual.arrayChannel[1].overwritePermissions((actual.arrayRoles[0].id), {'SEND_MESSAGES': true });
       console.log( actual.arrayChannel[1].permissionsFor(actual.users[0].id));
