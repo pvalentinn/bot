@@ -28,3 +28,4 @@ The whole game logic is yet to come.
 
 [Discord API]: https://discord.com/developers/docs/intro
 [Discord.js]: https://discord.js.org/
+[Auth]: "portfolio"
