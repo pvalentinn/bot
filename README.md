@@ -3,7 +3,7 @@
 ## DESCRIPTION :
 The purpose of this project is to be able to play a game of Werewolf on discord.  
 Each player receives a role and the bot takes care of the game itself.  
-To do so, I used the **[Discord API]** via the Node.js module called **[discord.js]**.  
+To do so, I used the **[Discord API]** via the Node.js module called **[Discord.js]**.  
 The project is not currently finished.  
 
 ## VISUAL : 
