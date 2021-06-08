@@ -11,8 +11,8 @@ The project is not currently finished.
 
 ## INSTALLATION : 
 Installation is pretty straight forward, git clone the repo :
-```sh   
-    https://github.com/pvalentinn/bot.git
+```bash   
+    git clone https://github.com/pvalentinn/bot.git
 ```
 All you need to do after that is execute the command : `node index` and done !
 
